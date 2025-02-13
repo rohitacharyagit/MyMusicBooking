@@ -1,0 +1,27 @@
+{
+    "version": "1.0",
+    "language": "en",
+    "translations": [
+      {
+        "id": "title",
+        "source": "Book Me for a Gig!",
+        "target": ""
+      },
+      {
+        "id": "dateLabel",
+        "source": "Preferred Date",
+        "target": ""
+      },
+      {
+        "id": "musicLabel",
+        "source": "Music Genre",
+        "target": ""
+      },
+      {
+        "id": "submitButton",
+        "source": "Submit Booking",
+        "target": ""
+      }
+    ]
+  }
+  
