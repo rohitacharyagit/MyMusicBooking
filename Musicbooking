@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Musician Booking - SAP Joule Demo</title>
+  <style>
+    /* ============== GLOBAL RESET ============== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fa;
+      color: #333;
+      padding: 20px;
+    }
+
+    /* ============== HEADER STYLES ============== */
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    .joule-logo {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .joule-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #0FAAFF; /* SAP-like brand color */
+    }
+
+    /* ============== CONTAINER LAYOUT ============== */
+    .container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* ============== BOOKING FORM ============== */
+    .booking-form {
+      max-width: 400px;
+      flex: 1;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .booking-form h1 {
+      margin-bottom: 10px;
+      color: #20363C;
+    }
+    .booking-form label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .booking-form input {
+      padding: 8px;
+      width: 100%;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .booking-form button {
+      margin-top: 15px;
+      padding: 10px 15px;
+      cursor: pointer;
+      background-color: #0FAAFF;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    .booking-form button:hover {
+      background-color: #008FCC;
+    }
+
+    /* ============== HELP BUTTON ============== */
+    .help-button {
+      background-color: #0FAAFF;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .help-button:hover {
+      background-color: #008FCC;
+    }
+
+    /* ============== MODAL / POPOVER STYLES ============== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background-color: #fff;
+      width: 400px;
+      max-width: 90%;
+      border-radius: 8px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background-color: #eaf6fe;
+      border-bottom: 1px solid #ccc;
+    }
+    .modal-header img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #0FAAFF;
+    }
+    .modal-body {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+    }
+    .modal-footer {
+      border-top: 1px solid #ccc;
+      padding: 16px;
+      text-align: right;
+      background-color: #f9f9f9;
+    }
+
+    /* ============== CHAT LOG STYLES ============== */
+    .chat-log {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 8px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: #fafafa;
+    }
+    .chat-message {
+      margin: 10px 0;
+      display: flex;
+      align-items: flex-start;
+    }
+    .chat-message.agent .message-bubble {
+      background: #0FAAFF;
+      color: #fff;
+      align-self: flex-start;
+    }
+    .chat-message.user .message-bubble {
+      background: #ECECEC;
+      color: #444;
+      align-self: flex-end;
+    }
+    .message-bubble {
+      padding: 10px 15px;
+      border-radius: 20px;
+      max-width: 80%;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    /* ============== INPUT GROUP ============== */
+    .chat-input-group {
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .chat-input-group input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .chat-input-group button {
+      background-color: #0FAAFF;
+      border: none;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      padding: 8px 16px;
+      font-weight: bold;
+    }
+    .chat-input-group button:hover {
+      background-color: #008FCC;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <!-- Placeholder Joule Logo (via Picsum) -->
+    <img 
+      src="https://picsum.photos/seed/joulelogo/100/100" 
+      alt="SAP Joule Logo" 
+      class="joule-logo"
+    />
+    <div class="joule-title">SAP Joule: Conversational Assistant</div>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <div class="container">
+
+    <!-- Booking Form -->
+    <div class="booking-form">
+      <h1 id="title">Book Me for a Gig!</h1>
+
+      <label id="dateLabel" for="dateInput">Preferred Date</label>
+      <input type="date" id="dateInput" />
+
+      <label id="musicLabel" for="musicInput">Music Genre</label>
+      <input type="text" id="musicInput" placeholder="e.g. Rock, Jazz, Pop" />
+
+      <button id="submitButton">Submit Booking</button>
+    </div>
+
+    <!-- Help Button -->
+    <div style="align-self: center;">
+      <button class="help-button" id="helpBtn">Help</button>
+    </div>
+
+  </div> <!-- end container -->
+
+  <!-- ===========================
+       MODAL (CHAT POPOVER)
+  ============================ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <!-- Placeholder avatar from Picsum -->
+        <img 
+          src="https://picsum.photos/seed/jouleavatar/80/80" 
+          alt="Joule Avatar" 
+        />
+        <span class="modal-title">Chat with Joule</span>
+      </div>
+      <div class="modal-body">
+        <div class="chat-log" id="chatLog"></div>
+        <div class="chat-input-group">
+          <input 
+            type="text" 
+            id="userInput" 
+            placeholder="Type your message here..." 
+          />
+          <button id="sendBtn">Send</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="closeBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /*********************************************************************
+     * TRANSLATIONS (locally stored for demo)
+     * In real usage, these would be retrieved via SAP Translation Hub.
+     *********************************************************************/
+    const translations = {
+      en: {
+        title: "Book Me for a Gig!",
+        dateLabel: "Preferred Date",
+        musicLabel: "Music Genre",
+        submitButton: "Submit Booking",
+      },
+      de: {
+        title: "Buche mich für einen Auftritt!",
+        dateLabel: "Bevorzugtes Datum",
+        musicLabel: "Musikgenre",
+        submitButton: "Buchung abschicken",
+      }
+    };
+
+    function updatePageLanguage(lang) {
+      document.getElementById("title").innerText = translations[lang].title;
+      document.getElementById("dateLabel").innerText = translations[lang].dateLabel;
+      document.getElementById("musicLabel").innerText = translations[lang].musicLabel;
+      document.getElementById("submitButton").innerText = translations[lang].submitButton;
+    }
+
+    /*********************************************************************
+     * MODAL / POPOVER OPEN & CLOSE
+     *********************************************************************/
+    const helpBtn = document.getElementById("helpBtn");
+    const modalOverlay = document.getElementById("modalOverlay");
+    const closeBtn = document.getElementById("closeBtn");
+
+    helpBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+
+    function openModal() {
+      modalOverlay.classList.add("active");
+      userInput.focus();
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove("active");
+      resetChat();
+    }
+
+    /*********************************************************************
+     * CHAT LOGIC
+     *********************************************************************/
+    const chatLog = document.getElementById("chatLog");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    // We track a simple conversation state
+    let conversationState = "start";
+
+    function appendMessage(author, text) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("chat-message", author);
+
+      const messageBubble = document.createElement("div");
+      messageBubble.classList.add("message-bubble");
+      messageBubble.innerText = text;
+
+      messageDiv.appendChild(messageBubble);
+      chatLog.appendChild(messageDiv);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // Send button event
+    sendBtn.addEventListener("click", handleUserMessage);
+    userInput.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        handleUserMessage();
+      }
+    });
+
+    function handleUserMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // Display user's message
+      appendMessage("user", message);
+      userInput.value = "";
+
+      // Decide response based on state
+      handleConversationFlow(message.toLowerCase());
+    }
+
+    function startConversation() {
+      appendMessage("agent", "Hello, I'm Joule, your conversational assistant. What can I help you with?");
+      conversationState = "awaiting-purpose";
+    }
+
+    function handleConversationFlow(message) {
+      switch (conversationState) {
+        case "start":
+          // First user input after opening popover
+          startConversation();
+          break;
+
+        case "awaiting-purpose":
+          // If the user says "I want to be more famous"
+          if (message.includes("famous")) {
+            appendMessage(
+              "agent", 
+              "I see! Here are some ideas:\n\n" +
+              "1) Expand your reach by adding more languages.\n" +
+              "2) Invest in marketing campaigns.\n" +
+              "3) Collaborate with local venues and influencers.\n\n" +
+              "Which option would you like to explore?"
+            );
+            conversationState = "awaiting-option";
+          } else {
+            appendMessage("agent", "I can assist with ideas to grow your audience. Mention if you want to be more famous!");
+          }
+          break;
+
+        case "awaiting-option":
+          // Suppose "option 1" or "expand to german" triggers language expansion
+          if (message.includes("1") || message.includes("language") || message.includes("german")) {
+            appendMessage(
+              "agent", 
+              "Great choice! Here are the German translations for your website:\n\n" +
+              "1) Book Me for a Gig! -> Buche mich für einen Auftritt!\n" +
+              "2) Preferred Date -> Bevorzugtes Datum\n" +
+              "3) Music Genre -> Musikgenre\n" +
+              "4) Submit Booking -> Buchung abschicken\n\n" +
+              "Is this okay? Type 'go' to publish or 'no' to cancel."
+            );
+            conversationState = "awaiting-publish-confirmation";
+          } else {
+            appendMessage("agent", "Alright, let me know if you'd like to try option 1 (languages) or we can chat about other ideas.");
+          }
+          break;
+
+        case "awaiting-publish-confirmation":
+          if (message.includes("go")) {
+            updatePageLanguage("de");
+            appendMessage("agent", "Your website is now updated to German! Do you need any more help?");
+            conversationState = "awaiting-final-help";
+          } else if (message.includes("no")) {
+            appendMessage("agent", "Translation canceled. Do you need any more help?");
+            conversationState = "awaiting-final-help";
+          } else {
+            appendMessage("agent", "Please type 'go' to publish, or 'no' to cancel.");
+          }
+          break;
+
+        case "awaiting-final-help":
+          if (message.includes("no")) {
+            appendMessage("agent", "Okay, closing. Have a great day!");
+            setTimeout(closeModal, 1000);
+          } else {
+            appendMessage("agent", "Feel free to ask anything else, or say 'no' to exit.");
+          }
+          break;
+
+        default:
+          appendMessage("agent", "I'm here to help. Let me know what you need!");
+          break;
+      }
+    }
+
+    // Reset chat each time the modal closes
+    function resetChat() {
+      conversationState = "start";
+      chatLog.innerHTML = "";
+    }
+
+    // Initialize chat when the modal opens
+    // (We could also do this immediately upon openModal())
+  </script>
+</body>
+</html>
