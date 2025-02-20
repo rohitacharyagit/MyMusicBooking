@@ -1,0 +1,21 @@
+{
+  "version" : "1.0",
+  "language" : "chs",
+  "translations" : [ {
+    "id" : "标题",
+    "source" : "给我预订一个吉克!",
+    "target" : " "
+  }, {
+    "id" : "日期标签",
+    "source" : "首选日期",
+    "target" : " "
+  }, {
+    "id" : "musicLabel",
+    "source" : "音乐类型",
+    "target" : " "
+  }, {
+    "id" : "提交按钮",
+    "source" : "提交预订",
+    "target" : " "
+  } ]
+}

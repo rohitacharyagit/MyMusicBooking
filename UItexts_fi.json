@@ -1,0 +1,21 @@
+{
+  "version" : "1.0",
+  "language" : "en",
+  "translations" : [ {
+    "id" : "Otsikko",
+    "source" : "Varaa minut keikalle!",
+    "target" : " "
+  }, {
+    "id" : "pvmLabel",
+    "source" : "Ensisijainen pvm",
+    "target" : " "
+  }, {
+    "id" : "musicLabel",
+    "source" : "Musiikkityyli",
+    "target" : " "
+  }, {
+    "id" : "Lähetyspainike",
+    "source" : "Lähetä varaus",
+    "target" : " "
+  } ]
+}

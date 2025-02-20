@@ -1,0 +1,21 @@
+{
+  "version" : "1.0",
+  "language" : "de",
+  "translations" : [ {
+    "id" : "Überschrift",
+    "source" : "Buche mich für ein Gig!",
+    "target" : " "
+  }, {
+    "id" : "dateLabel",
+    "source" : "Bevorzugtes Datum",
+    "target" : " "
+  }, {
+    "id" : "musicLabel",
+    "source" : "Musikgenre",
+    "target" : " "
+  }, {
+    "id" : "submitButton",
+    "source" : "Buchung senden",
+    "target" : " "
+  } ]
+}

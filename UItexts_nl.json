@@ -1,0 +1,21 @@
+{
+  "version" : "1.0",
+  "language" : "nl",
+  "translations" : [ {
+    "id" : "Opschrift",
+    "source" : "Boek mij voor een optreden!",
+    "target" : " "
+  }, {
+    "id" : "dateLabel",
+    "source" : "Voorkeursdatum",
+    "target" : " "
+  }, {
+    "id" : "musicLabel",
+    "source" : "Muziekgenre",
+    "target" : " "
+  }, {
+    "id" : "submitButton",
+    "source" : "Boeking indienen",
+    "target" : " "
+  } ]
+}
